@@ -44,10 +44,10 @@ def ArgumentsParser():
     parser.add_argument("-d", required=True, help="the path of the script for downloading")
     # https://github.com/openbabel/openbabel/releases/tag/openbabel-3-0-0
     parser.add_argument("-b", required=True, help="the path of openbabel")
-    # http://vina.scripps.edu/download.html
-    parser.add_argument("-v", required=True, help="the path of autodock vina")
     # https://anaconda.org/InsiliChem/autodocktools-prepare/files
     parser.add_argument("-a", required=True, help="the path of autodock tool")
+    # http://vina.scripps.edu/download.html
+    parser.add_argument("-v", required=True, help="the path of autodock vina")
     
     return parser
 
@@ -141,7 +141,7 @@ def main(args=None):
         os.makedirs(str_filepath_sdf)
     
     ### call the script of sdf downloading
-    str_command = "python /opt/download_sdf.py "
+    str_command = "python " + args.d + " "
     str_command += "--search_term" + " '" + str_keyword + "' "
     str_command += "--search_ligand" + " '" + str_ligand + "' "
     str_command += "--output_folder" + " " + str_filepath_sdf
