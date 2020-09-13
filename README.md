@@ -17,10 +17,10 @@ python path_to/FindDock.py
     -r path_to/receptor.pdb \ 
     -l path_to/ligand_list.txt \
     -o path/output_folder \
-    -d 'path_to/dowenload_sdf.py' \
-    -b 'path_to/bin/obabel' \
-    -a 'path_to/AutoDockTools/' \
-    -v 'path_to/bin/vina' \
+    -d path_to/dowenload_sdf.py \
+    -b path_to/bin/obabel \
+    -a path_to/AutoDockTools/ \
+    -v path_to/bin/vina \
     
 ```
 
