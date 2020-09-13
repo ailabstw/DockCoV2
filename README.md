@@ -21,7 +21,6 @@ python path_to/FindDock.py
     -b path_to/bin/obabel \
     -a path_to/AutoDockTools/ \
     -v path_to/bin/vina \
-    
 ```
 
 The content in ligand list can be multipe drugs in interest, and one drug per line. For example:
