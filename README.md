@@ -3,7 +3,7 @@ The current state of the COVID-19 pandemic is a global health crisis. To fight t
 
 <img src="https://github.com/ailabstw/DockCoV2/blob/master/DockCoV2.png" width="100%" height="100%">
 
-The overview of the database content. In addition to the docking scores, DockCoV2 designed a joint panel section to provide the following related information: Docking structure, Ligand information, and Experimental data
+Figure. The overview of the database content. In addition to the docking scores, DockCoV2 designed a joint panel section to provide the following related information: Docking structure, Ligand information, and Experimental data
 
 ## Dependencies
 Here is the dependency list for running the proposed pipeline in DockCoV2. Due to license issue, please download all of the 3rd-party packages for your own. For the docker user, please refer the [Dockerfile](https://github.com/ailabstw/DockCoV2/blob/master/script/Dockerfile) in this repo to setup the environment.
