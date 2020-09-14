@@ -233,11 +233,12 @@ def main(args=None):
     ### load active sites
     list_site = None
     int_extension = 10
-    with open(args.s, "r") as file_inputFile:
-        for line in file_inputFile:
-            if list_site is None:
-                list_site = []
-            list_site.append(line.strip())
+    if args.s is not None:
+        with open(args.s, "r") as file_inputFile:
+            for line in file_inputFile:
+                if list_site is None:
+                    list_site = []
+                list_site.append(line.strip())
 
     ### load .pdb file
     dict_atom = Atoms()
