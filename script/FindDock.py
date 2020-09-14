@@ -299,7 +299,7 @@ def main(args=None):
             str_command += "--receptor " + os.path.join(args.o, os.path.basename(args.r) + ".pdbqt") + " "
             str_command += "--ligand " + os.path.join(str_filepath_pdbqt, pdbqt) + " "
             str_command += "--config " + os.path.join(args.o, os.path.basename(args.r) + ".conf") + " "
-            str_command += "--cpu " + args.t + " "
+            str_command += "--cpu " + str(args.t) + " "
             str_command += "--out " + os.path.join(str_filepath_dock, str(str_prefix + ".pdbqt")) + " "
             str_command += "--log " + os.path.join(str_filepath_dock, str(str_prefix + ".log")) + " "
             
