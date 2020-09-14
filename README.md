@@ -22,7 +22,7 @@ python path_to/FindDock.py
     -d path_to/dowenload_sdf.py \
     -b path_to/bin/obabel \
     -a path_to/AutoDockTools/ \
-    -v path_to/bin/vina \
+    -v path_to/bin/vina
 ```
 
 The content in ligand list can be multipe drugs in interest, and one drug per line. For example:
@@ -39,7 +39,7 @@ python path_to/FindDock.py -h
 
 You will obtain the following argument list:
 ```
-usage: FindDock [-h] -r R [-s S] (-l L | -k K) -o O -n N -t T -d D -b B -a A -v V
+usage: FindDock [-h] -r R [-s S] (-l L | -k K) -o O [-n N] [-t T] -d D -b B -a A -v V
 
 FindDock is a batch AutoDock Vina runner for the candidate drugs or a keyword developed by Yu-Chuan (Chester) Chang & all member of the Genomics Team at AILabs in Taiwan.
 
