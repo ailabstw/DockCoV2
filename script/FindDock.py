@@ -37,8 +37,8 @@ def ArgumentsParser():
     parser.add_argument("-o", required=True, help="the output filepath")
     
     ### define docking parameters
-    parser.add_argument("-n", required=True, help="the number of replicates", default=1)
-    parser.add_argument("-t", required=True, help="the number of threads", default=1)
+    parser.add_argument("-n", required=False, help="the number of replicates", default=1)
+    parser.add_argument("-t", required=False, help="the number of threads", default=1)
     
     ### define arguments for 3rd-party tools
     parser.add_argument("-d", required=True, help="the path of the script for downloading")
