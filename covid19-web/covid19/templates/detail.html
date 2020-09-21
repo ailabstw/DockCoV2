@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include "header.html" %}
+    </head>
+    <body onload="load_docking_structure('{{ detail.drug.drug.cid }}', '{{ detail.drug.protein_type }}')">
+        {% include "navbar.html" with druglist="active" %}
+        <div class="container-fluid pt-5 main">
+            <div class="row align-items-center justify-content-center mt-5 m-3">
+                <div class="col-9 text-center">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                            <th scope="col">Drug Name</th>
+                            <th scope="col">Docking Score</th>
+                            <th scope="col">Protein Type</th>
+                            <th scope="col">Downloads</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% load get_item %}
+                        <tr>
+                            <td data-toggle="tooltip" data-placement="top" title="{{ detail.drug.drug.drug_name }}">{{ detail.drug.drug.drug_name }}</td>
+                            <td>{{ detail.drug.docking_score }}</td>
+                            <td>
+                                <span class="{{ detail.drug.protein_type }} protein">{{ protein|get_item:detail.drug.protein_type }}</span>
+                            </td>
+                            
+                            <td>
+                                <div>
+                                    <a href="{% url 'download-file' %}?task=ligand&cid={{ detail.drug.drug.cid }}&protein_type={{ detail.drug.protein_type }}">Download ligand</a>
+                                </div>
+                                <div>
+                                    <a href="{% url 'download-file' %}?task=protein&cid={{ detail.drug.drug.cid }}&protein_type={{ detail.drug.protein_type }}">Download protein</a>
+                                </div>
+                            </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                </div>
+                <div class="col-3 text-center">
+                    <a class='btn btn-primary' href="{% url 'search' %}?term={{ detail.drug.drug.cid }}" role="button">Other Protein Docking Result</a>
+                </div>
+            </div>
+
+            <div class="row m-3">
+                <div class="col-2">
+                    <div class="list-group" id="list-tab" role="tablist">
+                        <a class="list-group-item list-group-item-action active" id="list-docking-structure-list" data-toggle="list" href="#list-docking-structure" role="tab">Docking Structure</a>
+                        <a class="list-group-item list-group-item-action" id="list-ligand-info-list" data-toggle="list" href="#list-ligand-info" role="tab">Ligand Info</a>
+                        <a class="list-group-item list-group-item-action" id="list-validation-info-list" data-toggle="list" href="#list-validation-info" role="tab">Experimental Data</a>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <div class="tab-content border border-secondary" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="list-docking-structure" role="tabpanel" aria-labelledby="list-docking-structure-list">
+                            <!-- docking structure -->
+                            <div class="row p-4">
+                                <div class="col-6">
+                                    <h5>
+                                        Docking result
+                                        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#caseStudy">
+                                            (Case study)
+                                        </button>
+                                    </h5>
+                                    <div class="docking-view">
+                                        <div class="p-1">
+                                        </div>
+                                        <div class="docking" id="docking">
+                                            <div id="docking-message"></div>
+                                            <div id="docking-score-message"></div>
+                                        </div>
+                                        <div class="text-right">
+                                            <button id="hideArrowBtn">Hide arrow</button>
+                                        </div>
+                                    </div>
+                                    <div>Pose:</div>
+                                    <div id="poseButtonsDiv" class="text-center">
+                                        <div>
+                                            <button id="pose1" class="btn btn-outline-secondary" type="button">01</button>
+                                            <button id="pose2" class="btn btn-outline-secondary" type="button">02</button>
+                                            <button id="pose3" class="btn btn-outline-secondary" type="button">03</button>
+                                            <button id="pose4" class="btn btn-outline-secondary" type="button">04</button>
+                                            <button id="pose5" class="btn btn-outline-secondary" type="button">05</button>
+                                            <button id="pose6" class="btn btn-outline-secondary" type="button">06</button>
+                                            <button id="pose7" class="btn btn-outline-secondary" type="button">07</button>
+                                            <button id="pose8" class="btn btn-outline-secondary" type="button">08</button>
+                                            <button id="pose9" class="btn btn-outline-secondary" type="button">09</button>
+                                            <button id="pose10" class="btn btn-outline-secondary" type="button">10</button>
+                                        </div>
+                                        <div>
+                                            <button id="pose11" class="btn btn-outline-secondary" type="button">11</button>
+                                            <button id="pose12" class="btn btn-outline-secondary" type="button">12</button>
+                                            <button id="pose13" class="btn btn-outline-secondary" type="button">13</button>
+                                            <button id="pose14" class="btn btn-outline-secondary" type="button">14</button>
+                                            <button id="pose15" class="btn btn-outline-secondary" type="button">15</button>
+                                            <button id="pose16" class="btn btn-outline-secondary" type="button">16</button>
+                                            <button id="pose17" class="btn btn-outline-secondary" type="button">17</button>
+                                            <button id="pose18" class="btn btn-outline-secondary" type="button">18</button>
+                                            <button id="pose19" class="btn btn-outline-secondary" type="button">19</button>
+                                            <button id="pose20" class="btn btn-outline-secondary" type="button">20</button>
+                                        </div>
+                                    </div>
+                                    <div class="input-group p-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <div id="cp2" class="colorpicker-component">
+                                                    <input id="filterColorInput" type="text" class="form-control" style="display: none;"/>
+                                                    <span class="input-group-addon"><i style="margin-top: 3px"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input id="filterInput" type="text" class="form-control" placeholder="Enter selection language. Ex: 10-20:A" disabled>
+                                        <div class="input-group-append">
+                                            <button id="filterBtn" class="btn btn-secondary" type="button" disabled>Filter</button>
+                                        </div>
+                                    </div>
+                                    <div class="p-2">
+                                        <div class="text-justify">
+                                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                            For the sake of a straightforward representation of the docking results, the top 20 docking poses generated from AutoDock Vina were taken to build a protein heatmap. For each pose, a sphere centered at the centroid of ligand with a radius of 5 Angstroms is highlighted, and the frequency of residues inside the sphere is incremented. Results, including the heat map and the ligand docking positions with the best affinity score, are shown above, where the red scale of the protein heat map denotes the frequency of residues over twenty trials. DockCoV2 also provides a command-line filter that allows the user to select which atoms/residues to be shown in the ligand heatmap by using the selection language.
+                                        </div>
+                                        <a href="http://proteinformatics.charite.de/ngl/doc/#User_manual/Usage/Selection_language">What is selection language?</a>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <h5>Protein sequence</h5>
+                                    <div class="card card-body">
+                                        <div class="sequence pl-3 pr-3">
+                                            <div id="sequence" class="text-center">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="list-ligand-info" role="tabpanel" aria-labelledby="list-ligand-info-list">
+                            <!-- ligand info -->
+                            {% load replace_empty_string %}
+                            <div class="p-4">
+                                <div>
+                                    <h6>
+                                        > Ligand Relative
+                                        <button class="fas fa-info-circle btn btn-sm" data-toggle="collapse" data-target="#ligandRelativeRef"></button>
+                                    </h6>
+
+                                </div>
+                                <div class="pt-2 pl-3">
+                                    <div class="mt-2 mb-2 collapse" id="ligandRelativeRef">
+                                        <div class="card card-body" style="display: block"> 
+                                            <div>
+                                                <strong>Reference: </strong>
+                                            </div>
+                                            <ul>
+                                                <li>
+                                                    <i>Kim,S., Thiessen,P.A., Bolton,E.E., Chen,J., Fu,G., Gindulyte,A., Han,L., He,J., He,S., Shoemaker,B.A., et al. (2016) <a href="https://pubmed.ncbi.nlm.nih.gov/26400175/">PubChem Substance and Compound databases. </a>Nucleic Acids Res., 44, D1202–13.</i>
+                                                </li>
+                                                <li>
+                                                    <i>Wishart,D.S., Feunang,Y.D., Guo,A.C., Lo,E.J., Marcu,A., Grant,J.R., Sajed,T., Johnson,D., Li,C., Sayeeda,Z., et al. (2018) <a href="https://pubmed.ncbi.nlm.nih.gov/29126136/">DrugBank 5.0: a major update to the DrugBank database for 2018.</a> Nucleic Acids Research, 46, D1074–D1082.</i>
+                                                </li>
+                                                <li>
+                                                    <i>Kanehisa,M. (2000) <a href="https://pubmed.ncbi.nlm.nih.gov/10592173/">KEGG: Kyoto Encyclopedia of Genes and Genomes.</a> Nucleic Acids Research, 28, 27–30.</i>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <table class="table table-sm table-3-7">
+                                        <tr>
+                                            <td>Structure View</td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#StructureModal" onclick="load_compound_structure('{{ detail.drug.drug.cid }}')">
+                                                    3D Structure
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>CAS</td>
+                                            <td>{{ detail.drug.drug.cas|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>SMILES</td>
+                                            <td>{{ detail.drug.drug.smiles|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>InChI</td>
+                                            <td>{{ detail.drug.drug.inchi|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>InChI Key</td>
+                                            <td>{{ detail.drug.drug.inchikey|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Synonyms</td>
+                                            <td>
+                                                <div id="synonyms">
+                                                    <div class="collapse" id="collapseSynonyms">
+                                                        {% load split %}
+                                                        {% with detail.drug.drug.drug_synonyms|replace_empty_string|split:";" as synonyms %}
+                                                            {% for synonym in synonyms %}
+                                                                <div>{{ synonym }}</div>
+                                                            {% endfor %}
+                                                        {% endwith %}
+                                                    </div>
+                                                    <a class="collapsed" data-toggle="collapse" href="#collapseSynonyms" aria-expanded="false" aria-controls="collapseSynonyms"></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pathway</td>
+                                            <td>
+                                                {% if detail.drug.drug.kegg_drug_id|replace_empty_string == '-' %}
+                                                    -
+                                                {% else %}
+                                                    <a href="https://www.genome.jp/dbget-bin/get_linkdb?-t+pathway+dr:{{ detail.drug.drug.kegg_drug_id }}" target='_blank' rel="external nofollow noopener noreferrer">
+                                                        {{ detail.drug.drug.kegg_drug_id|replace_empty_string }}
+                                                        <span class="fa fa-external-link-alt"></span>
+                                                    </a>
+                                                {% endif %} / 
+
+                                                {% if detail.drug.drug.kegg_compound_id|replace_empty_string == '-' %}
+                                                    -
+                                                {% else %}
+                                                    <a href="https://www.genome.jp/dbget-bin/get_linkdb?-t+pathway+cpd:{{ detail.drug.drug.kegg_compound_id }}" target='_blank' rel="external nofollow noopener noreferrer">
+                                                        {{ detail.drug.drug.kegg_compound_id|replace_empty_string }}
+                                                        <span class="fa fa-external-link-alt"></span>
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hydrogen bond donors</td>
+                                            <td>{{ detail.drug.drug.num_hdonors|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hydrogen bond acceptors</td>
+                                            <td>{{ detail.drug.drug.num_hacceptors|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Molecular weight</td>
+                                            <td>{{ detail.drug.drug.mol_weight|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Octanol-water partition coefficient (log P)</td>
+                                            <td>{{ detail.drug.drug.mol_logp|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Number of atoms</td>
+                                            <td>{{ detail.drug.drug.number_of_atoms|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Rotatable bonds</td>
+                                            <td>{{ detail.drug.drug.toratable_bonds|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Molar refractivity</td>
+                                            <td>{{ detail.drug.drug.molar_refractivity|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Topological polar surface area</td>
+                                            <td>{{ detail.drug.drug.topological_surface_area_mapping|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Formal charge</td>
+                                            <td>{{ detail.drug.drug.formal_charge|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Number of heavy atoms</td>
+                                            <td>{{ detail.drug.drug.heavy_atoms|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Number of rings</td>
+                                            <td>{{ detail.drug.drug.num_of_rings|replace_empty_string }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div>
+                                    <h6>
+                                        > Clinical Relative
+                                        <button class="fas fa-info-circle btn btn-sm" data-toggle="collapse" data-target="#clinicalRelativeRef"></button>
+                                    </h6>
+                                </div>
+                                <div class="pt-2 pl-3">
+                                    <div class="mt-2 mb-2 collapse" id="clinicalRelativeRef">
+                                        <div class="card card-body" style="display: block"> 
+                                            <div>
+                                                <strong>Reference: </strong>
+                                            </div>
+                                            <ul>
+                                                <li>
+                                                    <i>Corsello,S.M., Bittker,J.A., Liu,Z., Gould,J., McCarren,P., Hirschman,J.E., Johnston,S.E., Vrcic,A., Wong,B., Khan,M., et al. (2017) <a href="https://pubmed.ncbi.nlm.nih.gov/28388612/">The Drug Repurposing Hub: a next-generation drug library and information resource.</a> Nature Medicine, 23, 405–408.</i>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <table class="table table-sm table-3-7">
+                                        <tr>
+                                            <td>Approval Info</td>
+                                            <td>
+                                                {% if 'nhi' in detail.drug.drug.drug_source %}
+                                                <button type="button" class="btn drug-source nhi" data-toggle="modal" data-target="#taiwanNHIData">
+                                                    Taiwan NHI
+                                                </button>
+                                                {% endif %}
+                                                {% if 'fda' in detail.drug.drug.drug_source or 'l4200' in detail.drug.drug.drug_source%}
+                                                <button type="button" class="btn drug-source fda" data-toggle="modal">
+                                                    FDA
+                                                </button>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Clinical Phase</td>
+                                            <td>{{ detail.drug.drug.clinical_phase|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mechanism of Action (MoA)</td>
+                                            <td>{{ detail.drug.drug.moa|replace_empty_string }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Target</td>
+                                            <td>
+                                                {% load split %}
+                                                {% with detail.drug.drug.target|replace_empty_string|split:"|" as targets %}
+                                                    {% for t in targets %}
+                                                        <span class="p-1">
+                                                            {% if t == '-' %}
+                                                                -
+                                                            {% else %}
+                                                                <a href="https://pubchem.ncbi.nlm.nih.gov/gene/{{ t }}/human">{{ t }}</a>
+                                                            {% endif %}
+                                                        </span>
+                                                    {% endfor %}
+                                                {% endwith %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Disease area</td>
+                                            <td>
+                                                {% with detail.drug.drug.disease_area|replace_empty_string|split:"|" as disease_areas %}
+                                                    {% for d in disease_areas %}
+                                                        <span class="p-1">
+                                                            {{ d }}
+                                                        </span>
+                                                    {% endfor %}
+                                                {% endwith %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Indication</td>
+                                            <td>
+                                                {% with detail.drug.drug.indication|replace_empty_string|split:"|" as indications %}
+                                                    {% for i in indications %}
+                                                        <span class="p-1">
+                                                            {{ i }}
+                                                        </span>
+                                                    {% endfor %}
+                                                {% endwith %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div>
+                                    <h6> > Druglikeness</h6>
+
+                                </div>
+                                <div class="pt-2 pl-3">
+                                    <table class="table table-sm table-3-7">
+                                        <tr>
+                                            <td>Lipinski's rules of five
+                                                <button type="button" class="fas fa-info-circle btn btn-sm" data-toggle="tooltip" data-html="true" title="- Hydrogen bond donors <= 5<br>- Hydrogen bond acceptors <= 10<br>- Molecular weight < 500 daltons<br>- logP < 5" href="https://en.wikipedia.org/wiki/Lipinski%27s_rule_of_five" target='_blank' rel="external nofollow noopener noreferrer"></button>
+                                            </td>
+                                            <td>
+                                                {% if detail.ruleof5.final_call == 'PASS' %}
+                                                    <span class="btn btn-success">PASS</span>
+                                                {% else %}
+                                                    <span class="btn btn-warning">VIOLATED</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lipinski's rules of five - Violated Rule</td>
+                                            <td>
+                                                {% for rule in detail.ruleof5.failed_rule %}
+                                                    <div>{{ rule }}</div>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ghose filter
+                                                <button type="button" class="fas fa-info-circle btn btn-sm" data-toggle="tooltip" data-html="true" title="- 480 >= molecular weight >= 160<br>- 5.6 >= logp >= 0.4 and logp <= 5.6<br>- 70 >= number_of_atoms >= 20<br>- 130 >= molar_refractivity >= 40" href="https://doi.org/10.1021%2Fcc9800071" target='_blank' rel="external nofollow noopener noreferrer"></button>
+                                            </td>
+                                            <td>
+                                                {% if detail.ghose.final_call == 'PASS' %}
+                                                    <span class="btn btn-success">PASS</span>
+                                                {% else %}
+                                                    <span class="btn btn-warning">VIOLATED</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ghose filter - Violated Rule</td>
+                                            <td>
+                                                {% for rule in detail.ghose.failed_rule %}
+                                                    <div>{{ rule }}</div>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Veber filter
+                                                <button type="button" class="fas fa-info-circle btn btn-sm" data-toggle="tooltip" data-html="true" title="- rotatable_bonds <= 10<br>- topological_surface_area_mapping <= 140" href="https://doi.org/10.1021%2Fjm020017n" target='_blank' rel="external nofollow noopener noreferrer"></button>
+                                            </td>
+                                            <td>
+                                                {% if detail.veber.final_call == 'PASS' %}
+                                                    <span class="btn btn-success">PASS</span>
+                                                {% else %}
+                                                    <span class="btn btn-warning">VIOLATED</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Veber filter - Violated Rule</td>
+                                            <td>
+                                                {% for rule in detail.veber.failed_rule %}
+                                                    <div>{{ rule }}</div>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>ROES filter
+                                                <button type="button" class="fas fa-info-circle btn btn-sm" data-toggle="tooltip" data-html="true" title="- 500 >= molecular_weight >= 200<br>- 5 >= logp >= 0<br>- 5 >= h_bond_donor >= 0<br>- 10 >= h_bond_acceptors >= 0<br>- 2 >= formal_charge<br>- 8 >= rotatable_bonds >= 0<br>- 50 >= heavy_atoms >= 15" href="http://www.nature.com/nrd/journal/v2/n4/full/nrd1063.html" target='_blank' rel="external nofollow noopener noreferrer"></button>
+                                            </td>
+                                            <td>
+                                                {% if detail.roes.final_call == 'PASS' %}
+                                                    <span class="btn btn-success">PASS</span>
+                                                {% else %}
+                                                    <span class="btn btn-warning">VIOLATED</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>ROES filter - Violated Rule</td>
+                                            <td>
+                                                {% for rule in detail.roes.failed_rule %}
+                                                    <div>{{ rule }}</div>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div>
+                                    <h6> > Other Relative Info</h6>
+                                </div>
+                                <div class="pt-2 pl-3">
+                                    <table class="table table-sm table-3-7">
+                                        <tr>
+                                            <td>PubChem</td>
+                                            <td>
+                                                {% if detail.drug.drug.cid|replace_empty_string == '-' %}
+                                                    -
+                                                {% else %}
+                                                    <a href="https://pubchem.ncbi.nlm.nih.gov/compound/{{ detail.drug.drug.cid }}" target='_blank' rel="external nofollow noopener noreferrer">
+                                                        {{ detail.drug.drug.cid|replace_empty_string }}
+                                                        <span class="fa fa-external-link-alt"></span>
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Drugbank</td>
+                                            <td>
+                                                {% if detail.drug.drug.drugbank_id|replace_empty_string == '-' %}
+                                                    -
+                                                {% else %}
+                                                    <a href="https://www.drugbank.ca/drugs/{{ detail.drug.drug.drugbank_id }}" target='_blank' rel="external nofollow noopener noreferrer">
+                                                        {{ detail.drug.drug.drugbank_id|replace_empty_string }}
+                                                        <span class="fa fa-external-link-alt"></span>
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <div>
+                                    <h6> > Drug Similarity</h6>
+                                </div>
+                                <div class="pt-2 pl-3">
+                                    <table class="table table-sm table-3-7">
+                                        <tr>
+                                            <td>Similarity from PubChem</td>
+                                            <td>
+                                                {% if detail.drug.drug.cid|replace_empty_string == '-' %}
+                                                    -
+                                                {% else %}
+                                                    <a href="https://pubchem.ncbi.nlm.nih.gov/#query=CID{{ detail.drug.drug.cid }}%20structure&tab=similarity" target='_blank' rel="external nofollow noopener noreferrer">
+                                                        {{ detail.drug.drug.cid|replace_empty_string }}
+                                                        <span class="fa fa-external-link-alt"></span>
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Similarity in DockCoV2</td>
+                                            <td>
+                                                <table class='table table-sm text-center'>
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th>CID</th>
+                                                            <th>Dice similarity score</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for similarity in detail.similarity %}
+                                                            <tr>
+                                                                <td>
+                                                                    <a href="{% url 'search' %}?term={{ similarity.drug2_cid }}">{{ similarity.drug2_cid }}</a>
+                                                                </td>
+                                                                <td>{{ similarity.dice_similarity_score|floatformat:2 }}</td>
+                                                            </tr>
+
+                                                        {% endfor %}
+                                                    </tbody>
+
+                                                </table>
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="tab-pane fade" id="list-validation-info" role="tabpanel" aria-labelledby="list-validation-info-list">
+                            <!-- validation info -->
+                            <div class="p-4">
+                                <div>
+                                    <h6> > SARS-CoV-2 Relative</h6>
+                                </div>
+                                <!-- GSEA Score -->
+                                {% if detail.gseascore|length > 0 %}
+                                    <div class="pt-2 pl-3">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <strong>GSEA Score</strong>
+                                                <button class="fas fa-info-circle btn btn-sm" data-toggle="collapse" data-target="#gseascoreInfo"></button>
+                                            </div>
+                                            <div class="col-9">
+                                                Dose: {{ detail.gseascore.0.dose }}
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 mb-2 collapse" id="gseascoreInfo">
+                                            <div class="card card-body" style="display: block"> 
+                                                Gene Set Enrichment Analysis (GSEA) is a method that determines whether an a priori defined set of genes shows statistically significant expression differences between two biological states (<a href="https://www.gsea-msigdb.org/gsea/index.jsp">https://www.gsea-msigdb.org/gsea/index.jsp</a>). Here, three NCBI Gene Expression Omnibus (GEO) data, GSE1739, GSE33267 and GSE122876 were used to identify sets of differentially expressed genes post SARS or MERS infection. Gene expression profiles of drug treatment were retrieved from the Connectivity Map (CMAP) database. The GSEA enrichment scores indicate the potential effectiveness of candidate drugs to reverse the gene expression signature of HCoV infection. For detail information, please see Zhou et al. Cell Discovery (2020) 6:14.
+                                            </div>
+                                        </div>
+                                        <table class='table table-sm table-striped table-hover text-center'>
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Virus</th>
+                                                    <th>Cell Line</th>
+                                                    <th>P-value</th>
+                                                    <th>Enrichment Score</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            {% for element in detail.gseascore %}
+                                                <tr>
+                                                    <td>MERS</td>
+                                                    <td>{{ element.cell_line }}</td>
+                                                    <td>{{ element.mers1_p|floatformat:2 }}</td>
+                                                    <td>{{ element.mers1_es|floatformat:2 }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            {% for element in detail.gseascore %}
+                                                <tr>
+                                                    <td>SARS (1)</td>
+                                                    <td>{{ element.cell_line }}</td>
+                                                    <td>{{ element.sars1_p|floatformat:2 }}</td>
+                                                    <td>{{ element.sars1_es|floatformat:2 }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            {% for element in detail.gseascore %}
+                                                <tr>
+                                                    <td>SARS (2)</td>
+                                                    <td>{{ element.cell_line }}</td>
+                                                    <td>{{ element.sars2_p|floatformat:2 }}</td>
+                                                    <td>{{ element.sars2_es|floatformat:2 }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                            
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="pt-2 pl-3">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <strong>GSEA Score</strong>
+                                                <button class="fas fa-info-circle btn btn-sm" data-toggle="collapse" data-target="#gseascoreInfo"></button>
+                                            </div>
+                                            <div class="col-9">
+                                                (no data)
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 mb-2 collapse" id="gseascoreInfo">
+                                            <div class="card card-body" style="display: block"> 
+                                                Gene Set Enrichment Analysis (GSEA) is a method that determines whether an a priori defined set of genes shows statistically significant differences between two biological states (<a href="https://www.gsea-msigdb.org/gsea/index.jsp">https://www.gsea-msigdb.org/gsea/index.jsp</a>). Here, three NCBI Gene Expression Omnibus (GEO) data, GSE1739, GSE33267 and GSE122876 were used to identify differentially expressed genes and drugs were retrieved from the Connectivity Map (CMAP) database. For detail information, please see Zhou et al. Cell Discovery (2020) 6:14. 
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <hr>
+                                <!-- Related Documents -->
+                                {% if detail.relateddocuments|length > 0 %}
+                                    <div class="pt-2 pl-3">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <strong>Related documents</strong>
+                                                <button class="fas fa-info-circle btn btn-sm" data-toggle="collapse" data-target="#relatedDocumentsInfo"></button>
+                                            </div>
+                                            <div class="mt-2 mb-2 collapse" id="relatedDocumentsInfo">
+                                                <div class="card card-body"> 
+                                                    Reference: <a href="https://amp.pharm.mssm.edu/covid19/">https://amp.pharm.mssm.edu/covid19/</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <table class='table table-sm table-striped table-hover text-center'>
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Title</th>
+                                                    <th>Link</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for element in detail.relateddocuments %}
+                                                    <tr>
+                                                        <td>
+                                                            <strong>{{ element.title }}</strong>
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ element.link }}" target='_blank' rel="external nofollow noopener noreferrer">
+                                                                {{ element.link }}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="pt-2 pl-3">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <strong>Related documents</strong>
+                                                <button class="fas fa-info-circle btn btn-sm" data-toggle="collapse" data-target="#relatedDocumentsInfo"></button>
+                                            </div>
+                                            <div class="col-9">
+                                                (no data)
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 mb-2 collapse" id="relatedDocumentsInfo">
+                                            <div class="card card-body"> 
+                                                Reference: <a href="https://amp.pharm.mssm.edu/covid19/">https://amp.pharm.mssm.edu/covid19/</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <hr>
+                                <!-- Drug Assays -->
+                                <div class="pt-2 pl-3">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <strong>Drug Assays</strong>
+                                            <button class="fas fa-info-circle btn btn-sm" data-toggle="collapse" data-target="#drugAssaysInfo"></button>
+                                        </div>
+                                        <div class="mt-2 mb-2 collapse" id="drugAssaysInfo">
+                                            <div class="card card-body"> 
+                                                <div><a href="https://www.ebi.ac.uk/chembl/assay_report_card/CHEMBL4303805/">CHEMBL4303805</a></div>
+                                                <div>Antiviral activity determined as inhibition of SARS-CoV-2 induced cytotoxicity of Caco-2 cells at 10 uM after 48 hours by high content imaging. Ratio of inhibition of each compound was reported.</div>
+
+                                                <div><a href="https://www.ebi.ac.uk/chembl/assay_report_card/CHEMBL4303810/">CHEMBL4303810</a></div>
+                                                <div>Antiviral activity against SARS-CoV-2 (USA-WA1/2020 strain) was measured by imaging in HRCE cells at MOI 0.4 after 96 hrs. Hit scores were reported from 0-1 for on-disease vs off-disease activity: scores >0.6 considered hits.</div>
+
+                                                <div><a href="https://www.ebi.ac.uk/chembl/assay_report_card/CHEMBL4303819/">CHEMBL4303819</a></div>
+                                                <div>Inhibition of cell viability relative to arbidol control was (inhibition index > 1 indicates higher activity) measured by fluorescence (OD590nm) in Vero E6 cells, which were infected with SARS-CoV-2 (strain BavPat1) at MOI 0.002 after 72hrs.</div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <table class='table table-sm table-striped table-hover text-center'>
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th></th>
+                                                <th>CHEMBL4303805</th>
+                                                <th>CHEMBL4303810</th>
+                                                <th>CHEMBL4303819</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>value</td>
+                                                <td>{{ detail.drug.drug.chembl4303805_activities }}</td>
+
+                                                {% if detail.drug.drug.chembl4303810_activities > 1 %}
+                                                    <td class="text-danger">{{ detail.drug.drug.chembl4303810_activities }}</td>
+                                                {% else %}
+                                                    <td class="text-success">{{ detail.drug.drug.chembl4303810_activities }}</td>
+                                                {% endif %}
+
+                                                {% if detail.drug.drug.chembl4303819_activities > 0.6 %}
+                                                    <td class="text-danger">{{ detail.drug.drug.chembl4303819_activities }}</td>
+                                                {% else %}
+                                                    <td class="text-success">{{ detail.drug.drug.chembl4303819_activities }}</td>
+                                                {% endif %}
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D Structure modal -->
+        <div class="modal fade" id="StructureModal" tabindex="-1" role="dialog" aria-labelledby="StructureModalTitle" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="StructureModalLongTitle">3D Structure</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="compound-view">
+                            <div class="p-1" id="compound-message">
+                            </div>
+                            <div class="compound" id="compound"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Taiwan NHI data -->
+        <div class="modal fade" id="taiwanNHIData" tabindex="-1" role="dialog" aria-labelledby="taiwanNHIDataTitle" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="taiwanNHIDataLongTitle">Taiwan NHI</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            {% for cid in detail.taiwannhi %}
+                            {% load get_item %}
+                            {% for element in detail.taiwannhi|get_item:cid %}
+                              {% load decode %}
+                              {% load to_int %}
+                              {% if detail.todaydate|to_int < element.price_end_date|decode:'big5-hkscs'|to_int %}
+                                <div class="card card-body mb-3 taiwannhi-{{ cid }}">
+                                  <div>
+                                    <strong>English name: </strong>{{ element.english_name|decode:'big5-hkscs' }}
+                                  </div>
+                                  <div>
+                                    <strong>Chinese name: </strong>{{ element.chinese_name|decode:'big5-hkscs' }}
+                                  </div>
+                                  <div>
+                                    <strong>Retail price: </strong>NTD {{ element.price|decode:'big5-hkscs' }}
+                                  </div>
+                                  <div>
+                                    <strong>Reference date: </strong>{{ element.price_start_date|decode:'big5-hkscs' }} ~ {{ element.price_end_date|decode:'big5-hkscs' }}
+                                  </div>
+                                  <div>
+                                    <strong>Dosage: </strong>{{ element.volume|decode:'big5-hkscs' }}{{ element.unit|decode:'big5-hkscs' }}
+                                  </div>
+                                  <div>
+                                    <strong>Main ingredient : </strong>{{ element.main_ingredient_name|decode:'big5-hkscs' }} {{ element.main_ingredient_volume|decode:'big5-hkscs' }}{{ element.main_ingredient_unit|decode:'big5-hkscs' }}
+                                  </div>
+                                  {% if element.second_ingredient_name|decode:'big5-hkscs' != '' %}
+                                  <div>
+                                    <strong>Second ingredient: </strong>{{ element.second_ingredient_name|decode:'big5-hkscs' }} {{ element.second_ingredient_volume|decode:'big5-hkscs' }}{{ element.second_ingredient_unit|decode:'big5-hkscs' }}
+                                  </div>
+                                  {% endif %}
+                                  {% if element.third_ingredient_name|decode:'big5-hkscs' != '' %}
+                                    <div>
+                                      <strong>Third ingredient: </strong>{{ element.third_ingredient_name|decode:'big5-hkscs' }} {{ element.third_ingredient_volume|decode:'big5-hkscs' }}{{ element.third_ingredient_unit|decode:'big5-hkscs' }}
+                                    </div>
+                                  {% endif %}
+                                  {% if element.fourth_ingredient_name|decode:'big5-hkscs' != '' %}
+                                    <div>
+                                      <strong>Fourth ingredient: </strong>{{ element.fourth_ingredient_name|decode:'big5-hkscs' }} {{ element.fourth_ingredient_volume|decode:'big5-hkscs' }}{{ element.fourth_ingredient_unit|decode:'big5-hkscs' }}
+                                    </div>
+                                  {% endif %}
+                                  {% if element.fifth_ingredient_name|decode:'big5-hkscs' != '' %}
+                                    <div>
+                                      <strong>Fifth ingredient: </strong>{{ element.fifth_ingredient_name|decode:'big5-hkscs' }} {{ element.fifth_ingredient_volume|decode:'big5-hkscs' }}{{ element.fifth_ingredient_unit|decode:'big5-hkscs' }}
+                                    </div>
+                                  {% endif %}
+                                  {% if element.sixth_ingredient_name|decode:'big5-hkscs' != '' %}
+                                    <div>
+                                      <strong>Sixth ingredient: </strong>{{ element.sixth_ingredient_name|decode:'big5-hkscs' }} {{ element.sixth_ingredient_volume|decode:'big5-hkscs' }}{{ element.sixth_ingredient_unit|decode:'big5-hkscs' }}
+                                    </div>
+                                  {% endif %}
+                                  <div>
+                                    <strong>Drug retailer: </strong>{{ element.company_name|decode:'big5-hkscs' }}
+                                  </div>
+                                  <div>
+                                    <strong>Drug manufacturer: </strong>{{ element.production_company|decode:'big5-hkscs' }}
+                                  </div>
+                                </div>
+                              {% endif %}
+                            {% endfor %}
+                            
+                          {% endfor %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Docking structure case study -->
+        <div class="modal fade" id="caseStudy" tabindex="-1" role="dialog" aria-labelledby="caseStudyTitle" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="caseStudyTitle">Case study</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            {% load static %}
+                            <p>
+                                <img src="{% static 'images/case_study.png' %}" class="home-img img-fluid" />
+                            </p>
+                            <div>
+                                This is a demonstration of the structure of 3CLpro (PDB ID: 6LU7) with molecular docking. In order to validate our virtual screening pipeline, we separated the original structure into a ligand and a receptor, and docked them with the proposed pipeline. The left-hand side shows that eight out of the top 20 docking poses (colored in blue) are located in the binding pocket of the protein. This figure also demonstrates that users can explore the binding pocket through the hot spot of our heatmap. The right-hand side zooms in the binding pocket and shows that the top docking pose (colored in blue) of our pipeline is close to the ligand (colored in red) in the crystal structure.
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% include "footer.html" %}
+    </body>
+</html>

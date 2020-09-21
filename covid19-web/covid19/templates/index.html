@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include "header.html" %}
+    </head>
+    <body>
+        {% include "navbar.html" with about="active" %}
+        <div class="container-fluid pt-5 main">
+            <div class="row mt-5 pt-3">
+                <div class="col-12 text-center">
+                    <h2>
+                        <span class="text-ailabs-blue">DRUG SEARCH</span>
+                    </h2>
+                    
+                    <form action="{% url 'search' %}" method="get">
+                        <div class="form-group search-bar">
+                            <input type="text" name="term" id="term" class="form-control ui-widget term" placeholder="Drug Name">
+                        </div>
+                    </form>
+
+                    <div class="mt-2 mb-2">
+                        <span>Try an example: <a href="{% url 'search' %}?term=Penicillin">Penicillin</a></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jumbotron jumbotron-fluid bg-gray mt-3">
+                <div class="container">
+                    <p>
+                        The current state of the COVID-19 pandemic is a global health crisis. To fight the novel coronavirus, one of the best-known ways is to block enzymes essential for virus replication. Currently, we know that the SARS-CoV-2 virus encodes about 29 proteins such as spike protein, 3C-like protease (3CLpro), RNA-dependent RNA polymerase (RdRp), Papain-like protease (PLpro), and nucleocapsid (N) protein. SARS-CoV-2 uses human angiotensin-converting enzyme 2 (ACE2) for viral entry and transmembrane serine protease family member II (TMPRSS2) for the spike protein priming. Thus in order to speed up the discovery of therapeutic agents, we develop DockCoV2, a drug database for SARS-CoV2. DockCoV2 focuses on predicting the binding affinity of FDA-approved and Taiwan National Health Insurance (NHI) drugs with the seven proteins mentioned above. This database contains a total of 3,109 drugs. DockCoV2 is easy to use and search against, is well cross-linked to external databases, and provides state-of-the-art prediction results in one site. Users can download their drug-protein docking data of interest and examine additional drug-related information on DockCoV2. Furthermore, DockCoV2 provides validation information to help users understand which drugs have already been reported to be effective against MERS or SARS-CoV.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row mt-3 mb-5">
+                <div class="col-12 text-center">
+
+                    {% load static %}
+                    <p>
+                        <img src="{% static 'images/home.png' %}" class="home-img img-fluid" />
+                    </p>
+
+                </div>
+            </div>
+
+            <div class="row mt-3 mb-3">
+                <div class="col-6 text-left pl-10">
+                    <h5>
+                        <span class="text-ailabs-blue">Database Statistics</span>
+                    </h5>
+                    <div class="bg-gray p-2 radius">
+                        <div>Taiwan NHI Drugs 1,478</div>
+                        <div>FDA Approved Drugs 2,285</div>
+                        <div>Last Updated: 2020.09.11</div>
+                    </div>
+                </div>
+
+                <div class="col-6 text-left pr-10">
+                    <h5>
+                        <span class="text-ailabs-blue">Announcement</span>
+                    </h5>
+                    <div class="bg-gray p-2 mb-2 radius">
+                        <div>2020.09.11 Add other poses data.</div>
+                    </div>
+                    <div class="bg-gray p-2 mb-2 radius">
+                        <div>2020.09.01 Add N protein and TMPRSS2.</div>
+                    </div>
+                    <div class="bg-gray p-2 mb-2 radius">
+                        <div>2020.06.23 New layout updated.</div>
+                    </div>
+                    <div class="bg-gray p-2 mb-2 radius">
+                        <div>2020.06.01 Add lingand info and validation info.</div>
+                    </div>
+                    <div class="bg-gray p-2 mb-2 radius">
+                        <div>2020.05.18 First version of DockCoV2 updated.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include "footer.html" %}
+    </body>
+</html>

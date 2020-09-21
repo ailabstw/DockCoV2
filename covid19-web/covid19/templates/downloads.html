@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include "header.html" %}
+    </head>
+    <body>
+        {% include "navbar.html" with downloads="active" %}
+        <div class="container-fluid pt-5 main">
+
+            <div class="row mt-5 pt-3">
+                <div class="col-12 text-center">
+                    <h2>
+                        <span class="text-ailabs-blue">DOWNLOAD</span>
+                    </h2>
+                </div>
+            </div>
+
+            <div class="row mt-5 m-3">
+                <div class="col-12 text-center">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                            <th scope="col">Title</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Download link</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for d in download_list %}
+                            <tr>
+                                <th>
+                                    <strong>{{ d.title }}</strong>
+                                </th>
+                                <td style="text-align: left">{{ d.description }}</td>
+                                <td>
+                                    <a href="{% url 'download-file' %}?task=file&file_name={{ d.filename }}">
+                                        {{ d.filename }}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {% include "footer.html" %}
+    </body>
+</html>

@@ -1,0 +1,12 @@
+covid19-web/covid19/search/model_data/cidproteinscore_all_papainlike.pickle filter=lfs diff=lfs merge=lfs -text
+covid19-web/covid19/search/model_data/cidproteinscore_all_protease.pickle filter=lfs diff=lfs merge=lfs -text
+covid19-web/covid19/search/model_data/druginfo_init_20200901.pickle filter=lfs diff=lfs merge=lfs -text
+covid19-web/covid19/search/model_data/drugsimilarity_init_20200624.pickle filter=lfs diff=lfs merge=lfs -text
+covid19-web/covid19/search/model_data/nhidruginfo_init_20200520.pickle filter=lfs diff=lfs merge=lfs -text
+covid19-web/covid19/search/model_data/cidproteinscore_all_ace2.pickle filter=lfs diff=lfs merge=lfs -text
+covid19-web/covid19/search/model_data/cidproteinscore_all_nucleocapsid.pickle filter=lfs diff=lfs merge=lfs -text
+covid19-web/covid19/search/model_data/cidproteinscore_all_polymerase.pickle filter=lfs diff=lfs merge=lfs -text
+covid19-web/covid19/search/model_data/cidproteinscore_all_spike_rbd.pickle filter=lfs diff=lfs merge=lfs -text
+covid19-web/covid19/search/model_data/cidproteinscore_all_tmprss2.pickle filter=lfs diff=lfs merge=lfs -text
+covid19-web/covid19/static/compound_structure.tar.gz filter=lfs diff=lfs merge=lfs -text
+covid19-web/covid19/static/docking_structure.tar.gz filter=lfs diff=lfs merge=lfs -text

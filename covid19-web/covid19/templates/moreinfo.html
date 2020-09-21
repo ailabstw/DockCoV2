@@ -1,0 +1,215 @@
+<div class="modal fade" id="moreInfoModal" tabindex="-1" role="dialog" aria-labelledby="moreInfoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="moreInfoModalLabel">More Info</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div role="tabpanel">
+          <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" data-toggle="tab" href="#pubchemTab" role="tab" aria-controls="pubchemTab" aria-selected="true">PubChem</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#taiwannhiTab" role="tab" aria-controls="taiwannhiTab" aria-selected="true">Taiwan NHI</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#drugscreeningTab" role="tab" aria-controls="drugscreeningTab" aria-selected="true">Drug screening</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#gseascoreTab" role="tab" aria-controls="gseascoreTab" aria-selected="false">GSEA score</a>
+        </li>
+      </ul>
+      <div class="tab-content moreinfo-content">
+        <div class="tab-pane fade show active" id="pubchemTab" role="tabpanel">
+          {% for cid in moreinfo.pubchem %}
+            <div class="card card-body mb-3 pubchem-{{ cid }} pubchem-card">
+              <a href="https://pubchem.ncbi.nlm.nih.gov/compound/{{ cid }}" target='_blank' rel="external nofollow noopener noreferrer">
+                  CID: {{ cid }}
+                  <span class="fa fa-external-link-alt"></span>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="tab-pane fade" id="taiwannhiTab" role="tabpanel">
+          <div class="taiwannhi-no-data">(no data)</div>
+          {% for cid in moreinfo.taiwannhi %}
+            {% load get_item %}
+            {% for element in moreinfo.taiwannhi|get_item:cid %}
+              {% load decode %}
+              {% load to_int %}
+              {% if moreinfo.todaydate|to_int < element.price_end_date|decode:'big5-hkscs'|to_int %}
+                <div class="card card-body mb-3 taiwannhi-{{ cid }} pubchem-card">
+                  <div>
+                    <strong>藥品英文名稱: </strong>{{ element.english_name|decode:'big5-hkscs' }}
+                  </div>
+                  <div>
+                    <strong>藥品中文名稱: </strong>{{ element.chinese_name|decode:'big5-hkscs' }}
+                  </div>
+                  <div>
+                    <strong>藥品參考金額: </strong>NTD {{ element.price|decode:'big5-hkscs' }}
+                  </div>
+                  <div>
+                    <strong>藥品參考金額日期: </strong>{{ element.price_start_date|decode:'big5-hkscs' }} ~ {{ element.price_end_date|decode:'big5-hkscs' }}
+                  </div>
+                  <div>
+                    <strong>藥品規格量: </strong>{{ element.volume|decode:'big5-hkscs' }}{{ element.unit|decode:'big5-hkscs' }}
+                  </div>
+                  <div>
+                    <strong>主成份: </strong>{{ element.main_ingredient_name|decode:'big5-hkscs' }} {{ element.main_ingredient_volume|decode:'big5-hkscs' }}{{ element.main_ingredient_unit|decode:'big5-hkscs' }}
+                  </div>
+                  {% if element.second_ingredient_name|decode:'big5-hkscs' != '' %}
+                  <div>
+                    <strong>複方一: </strong>{{ element.second_ingredient_name|decode:'big5-hkscs' }} {{ element.second_ingredient_volume|decode:'big5-hkscs' }}{{ element.second_ingredient_unit|decode:'big5-hkscs' }}
+                  </div>
+                  {% endif %}
+                  {% if element.third_ingredient_name|decode:'big5-hkscs' != '' %}
+                    <div>
+                      <strong>複方二: </strong>{{ element.third_ingredient_name|decode:'big5-hkscs' }} {{ element.third_ingredient_volume|decode:'big5-hkscs' }}{{ element.third_ingredient_unit|decode:'big5-hkscs' }}
+                    </div>
+                  {% endif %}
+                  {% if element.fourth_ingredient_name|decode:'big5-hkscs' != '' %}
+                    <div>
+                      <strong>複方三: </strong>{{ element.fourth_ingredient_name|decode:'big5-hkscs' }} {{ element.fourth_ingredient_volume|decode:'big5-hkscs' }}{{ element.fourth_ingredient_unit|decode:'big5-hkscs' }}
+                    </div>
+                  {% endif %}
+                  {% if element.fifth_ingredient_name|decode:'big5-hkscs' != '' %}
+                    <div>
+                      <strong>複方四: </strong>{{ element.fifth_ingredient_name|decode:'big5-hkscs' }} {{ element.fifth_ingredient_volume|decode:'big5-hkscs' }}{{ element.fifth_ingredient_unit|decode:'big5-hkscs' }}
+                    </div>
+                  {% endif %}
+                  {% if element.sixth_ingredient_name|decode:'big5-hkscs' != '' %}
+                    <div>
+                      <strong>複方五: </strong>{{ element.sixth_ingredient_name|decode:'big5-hkscs' }} {{ element.sixth_ingredient_volume|decode:'big5-hkscs' }}{{ element.sixth_ingredient_unit|decode:'big5-hkscs' }}
+                    </div>
+                  {% endif %}
+                  <div>
+                    <strong>藥商名稱: </strong>{{ element.company_name|decode:'big5-hkscs' }}
+                  </div>
+                  <div>
+                    <strong>製造廠名稱: </strong>{{ element.production_company|decode:'big5-hkscs' }}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+            
+          {% endfor %}
+          <hr>
+          <div class="taiwannhi-reference">
+            <h6>Reference</h6>
+            <a href="https://www.nhi.gov.tw/Content_List.aspx?n=238507DCFE832EAE&topn=3FC7D09599D25979">
+              https://www.nhi.gov.tw/Content_List.aspx?n=238507DCFE832EAE&topn=3FC7D09599D25979
+            </a>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="drugscreeningTab" role="tabpanel">
+          <div class="drugscreening-no-data">(no data)</div>
+          {% for element in moreinfo.drugscreening %}
+            <div class="card card-body mb-3 drugscreening-{{ element.drugbank_id }} drugscreening-card">
+              <h6>DrugBank ID: <a href="https://www.drugbank.ca/drugs/{{ element.drugbank_id }}" target='_blank' rel="external nofollow noopener noreferrer">{{ element.drugbank_id }}</a></h6>
+              <h6>Name: {{ element.name }}</h6>
+              <h6>Z score: </h6>
+              <table class="table table-hover table-bordered">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">PAN</th>
+                    <th scope="col">SARS</th>
+                    <th scope="col">MERS</th>
+                    <th scope="col">IBV</th>
+                    <th scope="col">MHV</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ element.z_score_pan }}</td>
+                    <td>{{ element.z_score_sars }}</td>
+                    <td>{{ element.z_score_mers }}</td>
+                    <td>{{ element.z_score_ibv }}</td>
+                    <td>{{ element.z_score_mhv }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <h6>P value: </h6>
+              <table class="table table-hover table-bordered">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">PAN</th>
+                    <th scope="col">SARS</th>
+                    <th scope="col">MERS</th>
+                    <th scope="col">IBV</th>
+                    <th scope="col">MHV</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ element.p_value_pan }}</td>
+                    <td>{{ element.p_value_sars }}</td>
+                    <td>{{ element.p_value_mers }}</td>
+                    <td>{{ element.p_value_ibv }}</td>
+                    <td>{{ element.p_value_mhv }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          {% endfor %}
+          <hr>
+          <div class="drugscreening-reference">
+            <h6>Reference</h6>
+            <a href="https://github.com/ChengF-Lab/2019-nCoV">
+              https://github.com/ChengF-Lab/2019-nCoV
+            </a>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="gseascoreTab" role="tabpanel">
+          <div class="gseascore-no-data">(no data)</div>
+          {% for element in moreinfo.gseascore %}
+            <div class="card card-body mb-3 gseascore-{{ element.drugbank_id }} gseascore-card">
+              <h6>CMAP Instance: {{ element.cmap_instance }}</h6>
+              <h6>DrugBank ID: <a href="https://www.drugbank.ca/drugs/{{ element.drugbank_id }}" target='_blank' rel="external nofollow noopener noreferrer">{{ element.drugbank_id }}</a></h6>
+              <h6>Name: {{ element.name }}</h6>
+              <h6>Dose: {{ element.dose }}</h6>
+              <h6>Cell Line: {{ element.cell_line }}</h6>
+              <table class="table table-hover table-bordered">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">MERS1-ES</th>
+                    <th scope="col">MERS1-P</th>
+                    <th scope="col">SARS1-ES</th>
+                    <th scope="col">SARS1-P</th>
+                    <th scope="col">SARS2-ES</th>
+                    <th scope="col">SARS2-P</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ element.mers1_es }}</td>
+                    <td>{{ element.mers1_p }}</td>
+                    <td>{{ element.sars1_es }}</td>
+                    <td>{{ element.sars1_p }}</td>
+                    <td>{{ element.sars2_es }}</td>
+                    <td>{{ element.sars2_p }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          {% endfor %}
+          <hr>
+          <div class="gseascore-reference">
+            <h6>Reference</h6>
+            <a href="https://github.com/ChengF-Lab/2019-nCoV">
+              https://github.com/ChengF-Lab/2019-nCoV
+            </a>
+          </div>
+        </div>
+      </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

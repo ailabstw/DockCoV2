@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% include "header.html" %}
+    </head>
+    <body>
+        {% include "navbar.html" with druglist="active" %}
+        <div class="container-fluid pt-5 main">
+
+            <div class="row mt-5 pt-3">
+                <div class="col-12 text-center">
+                    <h2>
+                        <span class="text-ailabs-blue">DRUG LIST</span>
+                    </h2>
+                </div>  
+            </div>
+
+            <form action="{% url 'search' %}" method="get">
+                <div class="row align-items-center mt-3">
+                    <input type="text" name="term" value="{{ form.data.term }}" style="display:none">
+                    <div class="col-2 text-center">
+                        Protein Type:
+                    </div>
+                    <div class="col-2 text-center">
+                        <select id="proteinTypeSelect" class="form-control" name="protein_type">
+                            {% if form.data.protein_type == '' %}
+                                <option value="" selected>All</option>
+                            {% else %}
+                                <option value="">All</option>
+                            {% endif %}
+
+                            {% load get_item%}
+                            {% for p in protein_type %}
+                                {% if p.protein_type == form.data.protein_type %}
+                                    <option value="{{ p.protein_type }}" selected>{{ protein|get_item:p.protein_type }}</option>
+                                {% else %}
+                                    <option value="{{ p.protein_type }}">{{ protein|get_item:p.protein_type }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-2 text-center">
+                        Drug Databases:
+                    </div>
+                    <div class="col-2 text-center">
+                        <select id="databaseSelect" class="form-control" name="drug_source">
+                            {% if form.data.drug_source == '' %}
+                                <option value="" selected>All</option>
+                            {% else %}
+                                <option value="">All</option>
+                            {% endif %}
+
+                            {% if form.data.drug_source == 'fda' %}
+                                <option value="fda" selected>FDA</option>
+                            {% else %}
+                                <option value="fda">FDA</option>
+                            {% endif %}
+
+                            {% if form.data.drug_source == 'nhi' %}
+                                <option value="nhi" selected>NHI</option>
+                            {% else %}
+                                <option value="nhi">NHI</option>
+                            {% endif %}
+                            
+                        </select>
+                    </div>
+                    <div class="col-2 text-center">
+                        <button class="btn btn-outline-secondary" onclick="">Apply</button>
+                    </div>
+
+                </div>
+            </form>
+
+            <div class="row mt-5 m-3">
+                <div class="col-12 text-center">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                            <th scope=col">#</th>
+                            <th scope="col">Drug Name</th>
+                            <th scope="col">Docking Score</th>
+                            <th scope="col">Protein Type</th>
+                            <th scope="col">Drug From</th>
+                            <th scope="col">CAS</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% load get_item %}
+                        {% for s in search_list %}
+                        <tr style="cursor: pointer">
+                            <th scope="row">{{ forloop.counter|add:page_offset }}</th>
+                            <td data-toggle="tooltip" data-placement="top" title="{{ s.drug__drug_name }}" onclick="click_drug('{{ s.drug__cid }}', '{{ s.protein_type }}')">{{ s.drug__drug_name }}</td>
+                            <td onclick="click_drug('{{ s.drug__cid }}', '{{ s.protein_type }}')">{{ s.docking_score }}</td>
+                            <td onclick="click_drug('{{ s.drug__cid }}', '{{ s.protein_type }}')">
+                                <span class="{{ s.protein_type }} protein">{{ protein|get_item:s.protein_type }}</span>
+                            </td>
+                            <td onclick="click_drug('{{ s.drug__cid }}', '{{ s.protein_type }}')">
+                                {% load split %}
+
+                                {% if 'l4200' in s.drug__drug_source or 'fda' in s.drug__drug_source %}
+                                    <span class="fda drug-source">FDA</span>
+                                {% endif %}
+                                {% if 'nhi' in s.drug__drug_source %}
+                                    <span class="nhi drug-source">NHI</span>
+                                {% endif %}
+
+                            </td>
+                            <td onclick="click_drug('{{ s.drug__cid }}', '{{ s.protein_type }}')">{{ s.drug__cas }}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row justify-content-lg-between m-3">
+                <div class="text-secondary">
+                    {% if total_cnt == 0 %}
+                        No results.
+                    {% elif total_cnt >  page_offset|add:'10'%}
+                        Showing {{ page_offset|add:'1' }} to {{ page_offset|add:'10' }} of {{ total_cnt }} entires.
+                    {% else %}
+                        Showing {{ page_offset|add:'1' }} to {{ total_cnt }} of {{ total_cnt }} entires.
+                    {% endif %}
+                </div>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {% if current_page == 1 %}
+                            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="{% url 'search' %}?term={{ form.data.term }}&page={{ current_page|add:'-1' }}&protein_type={{ form.data.protein_type }}&drug_source={{ form.data.drug_source }}">Previous</a></li>
+                            <li class="page-item"><a class="page-link" href="{% url 'search' %}?term={{ form.data.term }}&page={{ current_page|add:'-1' }}&protein_type={{ form.data.protein_type }}&drug_source={{ form.data.drug_source }}">{{ current_page|add:'-1' }}</a></li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                {{ current_page }}
+                                <span class="sr-only">(current)</span>
+                            </span>
+                        </li>
+
+                        {% if current_page == max_page %}
+                            <li class="page-item disabled"><span class="page-link">Next</span></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="{% url 'search' %}?term={{ form.data.term }}&page={{ current_page|add:'1' }}&protein_type={{ form.data.protein_type }}&drug_source={{ form.data.drug_source }}">{{ current_page|add:'1' }}</a></li>
+                            <li class="page-item"><a class="page-link" href="{% url 'search' %}?term={{ form.data.term }}&page={{ current_page|add:'1' }}&protein_type={{ form.data.protein_type }}&drug_source={{ form.data.drug_source }}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+
+            <hr />
+
+        </div>
+        {% include "footer.html" %}
+    </body>
+</html>
