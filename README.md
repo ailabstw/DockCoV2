@@ -59,6 +59,6 @@ optional arguments:
 ```
 
 ## Citing
-Please considering cite the following paper (currently under revision in NAR) if you use DockCoV2 in a scientific publication:
+Please considering cite the following paper if you use DockCoV2 in a scientific publication:
 
 [1] Ting-Fu Chen<sup>†</sup>, Yu-Chuan Chang<sup>†</sup>, Yi Hsiao<sup>†</sup>, Ko-Han Lee<sup>†</sup>, Yu-Chun Hsiao, Yu-Hsiang Lin, Yi-Chin Ethan Tu, Hsuan-Cheng Huang, Chien-Yu Chen<sup>``*``</sup>, Hsueh-Fen Juan<sup>``*``</sup>., DockCoV2: a drug database against SARS-CoV-2, Nucleic Acids Research (2020), gkaa861, https://doi.org/10.1093/nar/gkaa861
