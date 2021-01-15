@@ -11,7 +11,7 @@ Here is the dependency list for running the proposed pipeline in DockCoV2. Due t
 * [Openbabel 3.0.0](https://github.com/openbabel/openbabel/releases/tag/openbabel-3-0-0)
 * [AutodockTool 1.5.7](https://anaconda.org/InsiliChem/autodocktools-prepare/files)
 * [AutoDock Vina 1.1.2](http://vina.scripps.edu/download.html)
-* [SDF Downloader](https://github.com/ailabstw/DockCoV2/blob/master/script/download_sdf)
+* [SDF Downloader](https://github.com/ailabstw/DockCoV2/blob/master/script/download_sdf.py)
 
 ## Usage Example
 ```
