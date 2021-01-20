@@ -25,7 +25,7 @@ def download_file(url, file_name, output_folder):
     # NOTE the stream=True parameter below
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
-        with open('{}/{}.sdf'.format(output_folder, file_name), 'wb') as f:
+        with open('{}/{}.sdf'.format(output_folder, file_name.replace(" ", "_")), 'wb') as f:
             for chunk in r.iter_content(chunk_size=8192): 
                 if chunk: # filter out keep-alive new chunks
                     f.write(chunk)
